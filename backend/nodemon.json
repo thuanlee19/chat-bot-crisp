@@ -1,0 +1,7 @@
+{
+  "watch": ["*.js", "routes/"],
+  "ignore": ["node_modules/"],
+  "ext": "js,json",
+  "verbose": true
+}
+

@@ -51,6 +51,7 @@ app.post('/api/crisp/rtm', async (req, res) => {
     let externalResult = null;
     
     try {
+      console.log('Calling external backend with payload:', externalPayload);
       externalResult = await externalClient.post(`${EXTERNAL_BACKEND_API}`, externalPayload);
       if (externalResult.success) {
         // Optional: Send response back to Crisp conversation

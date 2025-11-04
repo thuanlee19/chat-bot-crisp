@@ -39,6 +39,42 @@ async function getConversationMetadata(websiteId, sessionId) {
 }
 
 /**
+ * Get messages in conversation from Crisp API
+ * @param {string} websiteId - Website ID
+ * @param {string} sessionId - Session ID
+ * @returns {Promise} - Conversation messages
+ */
+async function getMessagesInConversation(websiteId, sessionId) {
+  try {
+    const auth = Buffer.from(`${CRISP_IDENTIFIER}:${CRISP_KEY}`).toString('base64');
+    
+    const response = await axios.get(
+      `${CRISP_API_BASE_URL}/website/${websiteId}/conversation/${sessionId}/messages`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Crisp-Tier': 'plugin',
+          'Authorization': `Basic ${auth}`
+        }
+      }
+    );
+    
+    return {
+      success: true,
+      data: response.data
+    };
+  } catch (error) {
+    console.log(error);
+    console.error('❌ Error getting messages from Crisp API:', error.message);
+    return {
+      success: false,
+      error: error.message,
+      status: error.response?.status
+    };
+  }
+}
+
+/**
  * Send message to Crisp conversation
  * @param {string} websiteId - Website ID
  * @param {string} sessionId - Session ID
@@ -77,6 +113,7 @@ async function sendMessageToConversation(websiteId, sessionId, messageData) {
 
 module.exports = {
   getConversationMetadata,
+  getMessagesInConversation,
   sendMessageToConversation
 };
 

@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const { getConversationMetadata, sendMessageToConversation } = require('./crispController');
+const { getConversationMetadata, getMessagesInConversation, sendMessageToConversation } = require('./crispController');
 const { createClient } = require('./customRequest');
 
 const app = express();
@@ -132,6 +132,86 @@ app.post('/api/crisp/send-message', async (req, res) => {
     res.status(500).json({
       error: 'Failed to send message',
       message: error.message
+    });
+  }
+});
+
+// Get conversation metadata by websiteId and sessionId
+app.get('/api/crisp/conversation/metadata', async (req, res) => {
+  try {
+    const { websiteId, sessionId } = req.query;
+    
+    if (!websiteId || !sessionId) {
+      return res.status(400).json({
+        error: 'Missing required parameters',
+        required: ['websiteId', 'sessionId']
+      });
+    }
+    
+    console.log(`📋 Getting conversation metadata for website ${websiteId}, session ${sessionId}`);
+    
+    // Call getConversationMetadata function
+    const result = await getConversationMetadata(websiteId, sessionId);
+    
+    if (result.success) {
+      res.json({
+        success: true,
+        data: result.data,
+        timestamp: new Date().toISOString()
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        error: result.error || 'Failed to get conversation metadata',
+        timestamp: new Date().toISOString()
+      });
+    }
+  } catch (error) {
+    console.error('❌ Error getting conversation metadata:', error);
+    res.status(500).json({
+      error: 'Failed to get conversation metadata',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Get all messages in conversation by websiteId and sessionId
+app.get('/api/crisp/conversation/messages', async (req, res) => {
+  try {
+    const { websiteId, sessionId } = req.query;
+    
+    if (!websiteId || !sessionId) {
+      return res.status(400).json({
+        error: 'Missing required parameters',
+        required: ['websiteId', 'sessionId']
+      });
+    }
+    
+    console.log(`📨 Getting messages for website ${websiteId}, session ${sessionId}`);
+    
+    // Call getMessagesInConversation function
+    const result = await getMessagesInConversation(websiteId, sessionId);
+    
+    if (result.success) {
+      res.json({
+        success: true,
+        data: result.data,
+        timestamp: new Date().toISOString()
+      });
+    } else {
+      res.status(result.status || 500).json({
+        success: false,
+        error: result.error || 'Failed to get conversation messages',
+        timestamp: new Date().toISOString()
+      });
+    }
+  } catch (error) {
+    console.error('❌ Error getting conversation messages:', error);
+    res.status(500).json({
+      error: 'Failed to get conversation messages',
+      message: error.message,
+      timestamp: new Date().toISOString()
     });
   }
 });

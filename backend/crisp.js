@@ -59,13 +59,23 @@ const handleMessagePause = async (sessionId, originMessages) => {
   if (isRapid) {
     const responseContent = createAggregatedResponse(messages, isRapid);
     console.log('---RAPID Response content:', responseContent);
-    const replyMessage = {
-      type: 'text',
-      from: 'operator',
-      origin: 'chat',
-      content: "I'm not sure what you mean. Could you please provide more details about the issue you're facing? Please send the whole message in one text so I can help you better."
+    // const replyMessage = {
+    //   type: 'text',
+    //   from: 'operator',
+    //   origin: 'chat',
+    //   content: "I'm not sure what you mean. Could you please provide more details about the issue you're facing? Please send the whole message in one text so I can help you better."
+    // };
+    // await sendMessageToConversation(originMessages.website_id, originMessages.session_id, replyMessage);
+
+    const combineMessages = {
+      ...originMessages,
+      content: responseContent
     };
-    await sendMessageToConversation(originMessages.website_id, originMessages.session_id, replyMessage);
+    mainClient.post('/api/crisp/rtm', combineMessages)
+    .then(() => {})
+    .catch(error => {
+      console.error('❌ Error sending message to Main Backend server:', error.message);
+    });
   } else {
     console.log('---Websocket sending message:', originMessages);
     mainClient.post('/api/crisp/rtm', originMessages)

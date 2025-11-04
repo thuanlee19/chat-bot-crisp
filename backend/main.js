@@ -47,7 +47,8 @@ app.post('/api/crisp/rtm', async (req, res) => {
       session_id: sessionId,
       localUserId: metadata?.data?.data?.data['local-user-id'] ?? null,
       localUserEmail: metadata?.data?.data?.data['user-email'] ?? null,
-      userData: message.user
+      userData: message.user,
+      fingerprint: message.fingerprint
     };
     
     let externalResult = null;

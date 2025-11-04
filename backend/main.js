@@ -188,7 +188,7 @@ app.get('/api/crisp/conversation/messages', async (req, res) => {
       });
     }
     
-    console.log(`📨 Getting messages for website ${websiteId}, session ${sessionId}`);
+    console.log(`📨 Getting messages for website ${websiteId}, session ${sessionId}, timestamp ${timestamp}`);
     
     // Call getMessagesInConversation function
     const result = await getMessagesInConversation(websiteId, sessionId, timestamp);

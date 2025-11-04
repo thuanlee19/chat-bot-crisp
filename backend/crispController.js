@@ -47,7 +47,6 @@ async function getConversationMetadata(websiteId, sessionId) {
 async function getMessagesInConversation(websiteId, sessionId, timestamp) {
   try {
     const auth = Buffer.from(`${CRISP_IDENTIFIER}:${CRISP_KEY}`).toString('base64');
-    console.log(timestamp);
     
     const response = await axios.get(
       `${CRISP_API_BASE_URL}/website/${websiteId}/conversation/${sessionId}/messages/?timestamp_before=${timestamp}`,

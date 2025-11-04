@@ -179,7 +179,7 @@ app.get('/api/crisp/conversation/metadata', async (req, res) => {
 // Get all messages in conversation by websiteId and sessionId
 app.get('/api/crisp/conversation/messages', async (req, res) => {
   try {
-    const { websiteId, sessionId } = req.query;
+    const { websiteId, sessionId, timestamp } = req.query;
     
     if (!websiteId || !sessionId) {
       return res.status(400).json({
@@ -191,7 +191,7 @@ app.get('/api/crisp/conversation/messages', async (req, res) => {
     console.log(`📨 Getting messages for website ${websiteId}, session ${sessionId}`);
     
     // Call getMessagesInConversation function
-    const result = await getMessagesInConversation(websiteId, sessionId);
+    const result = await getMessagesInConversation(websiteId, sessionId, timestamp);
     
     if (result.success) {
       res.json({

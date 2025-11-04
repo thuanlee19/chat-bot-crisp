@@ -44,12 +44,13 @@ async function getConversationMetadata(websiteId, sessionId) {
  * @param {string} sessionId - Session ID
  * @returns {Promise} - Conversation messages
  */
-async function getMessagesInConversation(websiteId, sessionId) {
+async function getMessagesInConversation(websiteId, sessionId, timestamp) {
   try {
     const auth = Buffer.from(`${CRISP_IDENTIFIER}:${CRISP_KEY}`).toString('base64');
+    console.log(timestamp);
     
     const response = await axios.get(
-      `${CRISP_API_BASE_URL}/website/${websiteId}/conversation/${sessionId}/messages`,
+      `${CRISP_API_BASE_URL}/website/${websiteId}/conversation/${sessionId}/messages/?timestamp_before=${timestamp}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -61,7 +62,10 @@ async function getMessagesInConversation(websiteId, sessionId) {
     
     return {
       success: true,
-      data: response.data
+      data: {
+        ...response.data,
+        total: response.data?.data?.length ?? 0
+      },
     };
   } catch (error) {
     console.log(error);
